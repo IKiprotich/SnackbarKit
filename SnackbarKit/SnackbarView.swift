@@ -76,7 +76,6 @@ struct SnackbarView: View {
     }
 }
 
-// Posts a VoiceOver announcement for a message that appeared without user action
 @MainActor
 private func postAccessibilityAnnouncement(_ message: String) {
     #if canImport(UIKit)
