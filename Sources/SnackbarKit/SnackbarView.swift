@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-#if canImport(UIKit)
-import UIKit
-#elseif canImport(AppKit)
-import AppKit
-#endif
-
 struct SnackbarView: View {
 
     let item: SnackbarItem
@@ -25,26 +19,43 @@ struct SnackbarView: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: item.style.iconName)
-                .foregroundStyle(item.style.color)
-                .font(.system(size: 18, weight: .semibold))
+                .foregroundStyle(.white)
+                .font(.system(size: 16, weight: .semibold))
+                .frame(width: 32, height: 32)
+                .background(item.style.color, in: Circle())
                 .accessibilityHidden(true)
 
             Text(item.message)
-                .font(.subheadline)
+                .font(.system(size: 15, weight: .medium))
                 .foregroundStyle(.primary)
                 .lineLimit(2)
 
             Spacer(minLength: 0)
+
+            Button {
+                onDismiss()
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 24, height: 24)
+                    .background(.quaternary, in: Circle())
+            }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(.regularMaterial)
-                .shadow(color: .black.opacity(0.15), radius: 8, y: 4)
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(.ultraThinMaterial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .strokeBorder(.white.opacity(0.15), lineWidth: 0.5)
+                )
+                .shadow(color: .black.opacity(0.25), radius: 16, y: 8)
         )
         .frame(maxWidth: 420)
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 48)
         .offset(y: dragOffset)
         .gesture(
             DragGesture()
@@ -63,28 +74,27 @@ struct SnackbarView: View {
         )
         .accessibilityElement(children: .combine)
         .accessibilityLabel(item.message)
-        .accessibilityAction(named: Text("snackbar.action.dismiss", bundle: .module)) {
+        .accessibilityAction(named: "Dismiss") {
             onDismiss()
         }
         .transition(
             .move(edge: .bottom).combined(with: .opacity)
         )
-     
         .onAppear {
             postAccessibilityAnnouncement(item.message)
         }
     }
-}
 
-@MainActor
-private func postAccessibilityAnnouncement(_ message: String) {
-    #if canImport(UIKit)
-    UIAccessibility.post(notification: .announcement, argument: message)
-    #elseif canImport(AppKit)
-    NSAccessibility.post(
-        element: NSApp as Any,
-        notification: .announcementRequested,
-        userInfo: [.announcement: message]
-    )
-    #endif
+    @MainActor
+    private func postAccessibilityAnnouncement(_ message: String) {
+        #if canImport(UIKit)
+        UIAccessibility.post(notification: .announcement, argument: message)
+        #elseif canImport(AppKit)
+        NSAccessibility.post(
+            element: NSApp as Any,
+            notification: .announcementRequested,
+            userInfo: [.announcement: message]
+        )
+        #endif
+    }
 }
