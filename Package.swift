@@ -5,5 +5,25 @@ import PackageDescription
 
 let package = Package(
     name: "SnackbarKit",
-    swiftLanguageModes: [.v6]
+    defaultLocalization: "en",
+    platforms: [
+        .iOS(.v15),
+        .macOS(.v12)
+    ],
+    products: [
+        .library(
+            name: "SnackbarKit",
+            targets: ["SnackbarKit"]
+        )
+    ],
+    targets: [
+        .target(
+            name: "SnackbarKit",
+            path: "SnackbarKit"
+        ),
+        .testTarget(
+            name: "SnackbarKitTests",
+            dependencies: ["SnackbarKit"]
+        )
+    ]
 )
