@@ -1,2 +1,0 @@
-/* VoiceOver rotor action that dismisses the currently visible snackbar. */
-"snackbar.action.dismiss" = "Dismiss";
