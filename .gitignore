@@ -1,3 +1,7 @@
 .build/
 .swiftpm/xcode/xcuserdata/
 *.xcuserstate
+.build/
+.swiftpm/xcode/xcuserdata/
+*.xcuserstate
+SnackbarKit/Resources/
